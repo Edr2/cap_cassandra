@@ -1,0 +1,12 @@
+version: "2.4"
+services:
+  cas1:
+    image: cassandra
+    mem_limit: 5221225472
+    ports:
+      - "9042:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=MyCluster
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_DC=datacenter1
+    container_name: cas1
