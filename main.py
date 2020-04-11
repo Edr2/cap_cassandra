@@ -2,7 +2,7 @@ from cassandra.cluster import Cluster
 
 
 if __name__ == "__main__":
-    cluster = Cluster(['172.18.0.2'],port=9042)
+    cluster = Cluster(['cas1', 'cas2'], port=9042)
     session = cluster.connect()
 
     session.execute("CREATE KEYSPACE IF NOT EXISTS test_keyspace WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 }")
