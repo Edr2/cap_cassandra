@@ -1,0 +1,42 @@
+version: "2.4"
+
+# 3 node cluster
+# If you see exit code 137 (OOM killer) then ensure Docker has access to more resources or lower MAX_HEAP_SIZE=4096M env for each node
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    command: sleep infinity
+    environment:
+      PYTHONUNBUFFERED: 1
+    volumes:
+      - ..:/code
+
+  cas1:
+    image: cassandra
+    mem_limit: 5221225472
+    ports:
+      - "9042:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=MyCluster
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_DC=datacenter1
+      - MAX_HEAP_SIZE=4096M
+      - HEAP_NEWSIZE=1024M
+    container_name: cas1
+  cas2:
+    image: cassandra
+    mem_limit: 5221225472
+    links:
+      - cas1
+    environment:
+      - CASSANDRA_CLUSTER_NAME=MyCluster
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_DC=datacenter1
+      - MAX_HEAP_SIZE=4096M
+      - HEAP_NEWSIZE=1024M
+      - CASSANDRA_SEEDS=cas1
+    container_name: cas2
+    depends_on:
+      - cas1
